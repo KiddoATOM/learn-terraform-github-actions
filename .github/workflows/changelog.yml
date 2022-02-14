@@ -32,7 +32,7 @@ jobs:
                 "type": "header",
                 "text": {
                   "type": "plain_text",
-                  "text": "${{ GITHUB_ACTION_REPOSITORY }} new release [${{ github.ref }}]",
+                  "text": "${{ github.event.repository.name }} new release [${{ github.ref }}]",
                   "emoji": true
                 }
               },
