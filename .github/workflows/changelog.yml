@@ -19,9 +19,7 @@ jobs:
         id: sanitize
         run: |
           export CHANGELOG="${{ steps.extract-release-notes.outputs.release_notes }}"
-          CHANGELOG="${CHANGELOG//'%'/'%25'}"
-          CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
-          CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
+          CHANGELOG="${CHANGELOG@Q}"
           echo "::set-output name=changelog::$(echo "$CHANGELOG")"
       - name: Post to a Slack channel
         id: slack
