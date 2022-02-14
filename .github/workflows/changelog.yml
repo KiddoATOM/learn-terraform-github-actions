@@ -17,3 +17,33 @@ jobs:
         uses: ffurrer2/extract-release-notes@v1
       - name: echo
         run: echo "${{ steps.extract-release-notes.outputs.release_notes }}"
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.16.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          channel-id: 'C02E7R0DP2R'
+          # For posting a rich message using Block Kit
+          payload: |
+            {
+              "blocks": [
+              {
+                "type": "header",
+                "text": {
+                  "type": "plain_text",
+                  "text": "${{ GITHUB_ACTION_REPOSITORY }} new release [${{ github.ref }}]",
+                  "emoji": true
+                }
+              },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "${{ steps.extract-release-notes.outputs.release_notes }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
