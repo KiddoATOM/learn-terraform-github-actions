@@ -27,15 +27,16 @@ jobs:
           # For posting a rich message using Block Kit
           payload: |
             {
+              "text": "${{ github.event.repository.name }} new release [${{ github.ref }}]",
               "blocks": [
-              {
-                "type": "header",
-                "text": {
-                  "type": "plain_text",
-                  "text": "${{ github.event.repository.name }} new release [${{ github.ref }}]",
-                  "emoji": true
-                }
-              },
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "${{ github.event.repository.name }} new release [${{ github.ref }}]",
+                    "emoji": true
+                  }
+                },
                 {
                   "type": "section",
                   "text": {
