@@ -33,15 +33,14 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "${{ github.event.repository.name }} new release [${{ github.ref }}]",
-                    "emoji": true
+                    "text": "${{ github.event.repository.name }} new release [${{ github.ref }}]"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "${{ steps.extract-release-notes.outputs.release_notes }}"
+                    "text": "asd"
                   }
                 }
               ]
