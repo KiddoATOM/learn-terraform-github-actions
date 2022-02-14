@@ -46,7 +46,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "{{ steps.sanitize.outputs.changelog }}"
+                    "text": "${{ steps.sanitize.outputs.changelog }}"
                   }
                 }
               ]
