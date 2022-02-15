@@ -55,7 +55,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*${{ github.event.repository.name }}* new release [${GITHUB_REF#refs/tags/}]"
+                    "text": "*${{ github.event.repository.name }}* new release [${{ steps.tag_name.outputs.current_version }}]"
                   }
                 },
                 {
