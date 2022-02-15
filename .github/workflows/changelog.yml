@@ -1,4 +1,4 @@
-name: Echo Changelog
+name: Create Release 
 
 on:
   push:
@@ -10,34 +10,52 @@ jobs:
     name: Create release
     runs-on: ubuntu-latest
     steps:
+      - name: Get version from tag
+        id: tag_name
+        run: |
+          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/}
+        shell: bash
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Extract release notes
-        id: extract-release-notes
-        uses: ffurrer2/extract-release-notes@v1
-      - name: sanitize
+      - name: Get Changelog Entry
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          validation_depth: 10
+          version: ${{ steps.tag_name.outputs.current_version }}
+      - name: Sanitize CHANGELOG
         id: sanitize
         run: |
-          export CHANGELOG="${{ steps.extract-release-notes.outputs.release_notes }}"
+          export CHANGELOG="${{ steps.changelog_reader.outputs.changes }}"
           CHANGELOG="${CHANGELOG//$'\n'/\\n}"
           echo "::set-output name=changelog::$(echo "$CHANGELOG")"
+      - name: Create release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+          body: ${{ steps.changelog_reader.outputs.changes }}
       - name: Post to a Slack channel
         id: slack
         uses: slackapi/slack-github-action@v1.16.0
         with:
           # Slack channel id, channel name, or user id to post message.
           # See also: https://api.slack.com/methods/chat.postMessage#channels
-          channel-id: 'C02E7R0DP2R'
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           # For posting a rich message using Block Kit
           payload: |
             {
               "text": "${{ github.event.repository.name }} new release [${{ github.ref }}]",
               "blocks": [
                 {
-                  "type": "header",
+                  "type": "section",
                   "text": {
-                    "type": "plain_text",
-                    "text": "${{ github.event.repository.name }} new release [${{ github.ref }}]"
+                    "type": "mrkdwn",
+                    "text": "*${{ github.event.repository.name }}* new release [${GITHUB_REF#refs/tags/}]"
                   }
                 },
                 {
